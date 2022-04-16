@@ -13,10 +13,11 @@ import {
   commands
 } from 'vscode';
 import * as fs from 'fs';
+import { parse } from 'yaml';
 import * as path from 'path';
 import * as https from 'https';
 import * as lzString from 'lz-string';
-import * as jsonStringify from 'json-stringify-pretty-compact';
+// import * as jsonStringify from 'json-stringify-pretty-compact';
 import * as config from './config';
 import {Logger} from './logger';
 import {previewManager} from './preview.manager';
@@ -104,13 +105,13 @@ export class VegaPreview {
 
     // create preview panel title
     switch (viewType) {
-      case 'vega.preview':
+      case 'vega.preview_yaml':
         this._title = this._fileName;
         if (this._url.startsWith('https://')) {
           this._title = 'Untitled';
         }
         break;
-      case 'vega.visual.vocabulary':
+      case 'vega.visual_yaml.vocabulary':
         this._title = 'Visual Vocabulary';
         break;  
       default: // vega.help
@@ -136,7 +137,7 @@ export class VegaPreview {
       this._panel = window.createWebviewPanel(viewType, this._title, viewColumn, this.getWebviewOptions());
       let panelIconPath: string;
       switch (viewType) {
-        case 'vega.preview':
+        case 'vega.preview_yaml':
           panelIconPath = './images/vega-viewer.svg';
           break;
         case 'vega.visual.vocabulary':
@@ -319,8 +320,9 @@ export class VegaPreview {
   private refreshView(vegaSpec: string, fileType: string = null): void {
     try {
       // parse Vega spec string
-      this._spec = JSON.parse(vegaSpec);
-
+      this._spec = parse(vegaSpec);
+      vegaSpec = JSON.stringify(this._spec);
+      
       // extract data sources
       const data = this.getData(this._spec);
 
@@ -372,7 +374,7 @@ export class VegaPreview {
     const compressedVegaSpec = vegaSpecUrlPart.substring(vegaSpecPosition + 1);
     const vegaSpecString = lzString.decompressFromEncodedURIComponent(compressedVegaSpec);
     return {
-      fileType: (vegaSpecType === 'vega' ? 'vg.json' : 'vl.json'),
+      fileType: (vegaSpecType === 'vega' ? 'vg.yaml' : 'vl.yaml'),
       specString: vegaSpecString,
       compressedString: compressedVegaSpec
     };

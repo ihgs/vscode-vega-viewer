@@ -1,11 +1,11 @@
 {
-  "name": "vscode-vega-viewer",
-  "displayName": "Vega Viewer",
+  "name": "vscode-vega-viewer-yaml",
+  "displayName": "Vega Viewer with yaml",
   "description": "VSCode extension for Interactive Preview of Vega & Vega-Lite maps 🗺️ & graphs 📈 ",
-  "version": "9.5.0",
+  "version": "9.5.1",
   "icon": "images/vega-viewer.png",
-  "publisher": "RandomFractalsInc",
-  "author": "Taras Novak",
+  "publisher": "ihgs",
+  "author": "isao",
   "contributors": [
     "Taras Novak"
   ],
@@ -13,10 +13,10 @@
   "readme": "README.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RandomFractals/vscode-vega-viewer"
+    "url": "https://github.com/ihgs/vscode-vega-viewer"
   },
-  "bugs": "https://github.com/RandomFractals/vscode-vega-viewer/issues",
-  "homepage": "https://github.com/RandomFractals/vscode-vega-viewer/README.md",
+  "bugs": "https://github.com/ihgs/vscode-vega-viewer/issues",
+  "homepage": "https://github.com/ihgs/vscode-vega-viewer/README.md",
   "keywords": [
     "vega",
     "vega-lite",
@@ -52,13 +52,13 @@
     "theme": "dark"
   },
   "activationEvents": [
-    "onCommand:vega.create",
-    "onCommand:vega.preview",
-    "onCommand:vega.preview.remote",
+    "onCommand:vega.create_yaml",
+    "onCommand:vega.preview_yaml",
+    "onCommand:vega.preview_yaml.remote",
     "onCommand:vega.visual.vocabulary",
     "onCommand:vega.examples",
     "onCommand:vega.examples.lite",
-    "onWebviewPanel:vega.preview",
+    "onWebviewPanel:vega.preview_yaml",
     "onWebviewPanel:vega.visual.vocabulary",
     "onLanguage:json"
   ],
@@ -66,12 +66,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "vega.create",
+        "command": "vega.create_yaml",
         "title": "Create Vega Spec",
         "category": "Vega"
       },
       {
-        "command": "vega.preview",
+        "command": "vega.preview_yaml",
         "title": "Preview Vega Graph",
         "category": "Vega",
         "icon": {
@@ -80,12 +80,12 @@
         }
       },
       {
-        "command": "vega.preview.remote",
+        "command": "vega.preview_yaml.remote",
         "title": "Preview Remote Vega Graph",
         "category": "Vega"
       },
       {
-        "command": "vega.visual.vocabulary",
+        "command": "vega.visual_yaml.vocabulary",
         "title": "Visual Vocabulary Examples",
         "category": "Vega"
       },
@@ -102,19 +102,19 @@
     ],
     "keybindings": [
       {
-        "command": "vega.create",
+        "command": "vega.create_yaml",
         "key": "ctrl+alt+c"
       },
       {
-        "command": "vega.preview",
+        "command": "vega.preview_yaml",
         "key": "ctrl+alt+v"
       },
       {
-        "command": "vega.preview.remote",
+        "command": "vega.preview_yaml.remote",
         "key": "ctrl+alt+r"
       },
       {
-        "command": "vega.visual.vocabulary",
+        "command": "vega.visual_yaml.vocabulary",
         "key": "ctrl+alt+q"
       },
       {
@@ -128,73 +128,48 @@
     ],
     "languages": [
       {
-        "id": "json",
+        "id": "yaml",
         "aliases": [
-          "JSON",
+          "YAML",
           "Vega",
           "vg",
           "vl"
         ],
         "extensions": [
-          ".vega",
-          ".vg",
-          ".vg.json",
-          ".vl",
-          ".vl.json"
+          ".vg.yaml",
+          ".vl.yaml"
         ],
         "configuration": "./language-configuration.json"
-      }
-    ],
-    "jsonValidation": [
-      {
-        "fileMatch": "*.vega",
-        "url": "https://vega.github.io/schema/vega/v5.json"
-      },
-      {
-        "fileMatch": "*.vg",
-        "url": "https://vega.github.io/schema/vega/v5.json"
-      },
-      {
-        "fileMatch": "*.vg.json",
-        "url": "https://vega.github.io/schema/vega/v5.json"
-      },
-      {
-        "fileMatch": "*.vl",
-        "url": "https://vega.github.io/schema/vega-lite/v5.json"
-      },
-      {
-        "fileMatch": "*.vl.json",
-        "url": "https://vega.github.io/schema/vega-lite/v5.json"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "when": "resourceFilename =~ /.*\\.(vega|vg.json|vl.json|vg|vl)/",
-          "command": "vega.preview",
+          "when": "resourceFilename =~ /.*\\.(vg.yaml|vl.yaml)/",
+          "command": "vega.preview_yaml",
           "group": "navigation"
         }
       ],
       "editor/title": [
         {
-          "when": "resourceFilename =~ /.*\\.(vega|vg.json|vl.json|vg|vl)/",
-          "command": "vega.preview",
+          "when": "resourceFilename =~ /.*\\.(vg.yaml|vl.yaml)/",
+          "command": "vega.preview_yaml",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
-          "when": "resourceFilename =~ /.*\\.(vega|vg.json|vl.json|vg|vl)/",
-          "command": "vega.preview",
+          "when": "resourceFilename =~ /.*\\.(vg.yaml|vl.yaml)/",
+          "command": "vega.preview_yaml",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
       "type": "object",
-      "title": "Vega Viewer",
+      "title": "Vega Viewer for yaml",
       "properties": {
-        "vega.viewer.dataPreviewCommand": {
+        "vega.viewer_yaml.dataPreviewCommand": {
           "type": "string",
           "enum": [
             "vscode.open",
@@ -219,12 +194,12 @@
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.9",
     "@types/vscode": "^1.62.0",
-    "eslint": "^8.3.0",
-    "@typescript-eslint/parser": "^5.4.0",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "typescript": "^4.5.2",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.3.0",
     "glob": "^7.2.0",
     "mocha": "^9.1.3",
+    "typescript": "^4.5.2",
     "vscode-test": "^1.6.1"
   },
   "extensionPack": [
@@ -232,6 +207,7 @@
   ],
   "dependencies": {
     "json-stringify-pretty-compact": "^3.0.0",
-    "lz-string": "^1.4.4"
+    "lz-string": "^1.4.4",
+    "yaml": "^2.0.1"
   }
 }

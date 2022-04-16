@@ -21,11 +21,8 @@ import {Template, ITemplateManager, TemplateManager} from './template.manager';
 
 // supported vega spec json file extensions
 const VEGA_FILE_EXTENSIONS: string[] = [
-  '.vega',
-  '.vg',
-  '.vl',
-  '.vg.json',
-  '.vl.json'
+  '.vg.yaml',
+  '.vl.yaml'
 ];
 
 const logger: Logger = new Logger('vega.viewer:', config.logLevel);
@@ -45,41 +42,41 @@ export function activate(context: ExtensionContext) {
   const visualVocabularyTemplate: Template = templateManager.getTemplate('visual.vocabulary.html');
 
   // register Vega preview serializer for restore on vscode restart
-  window.registerWebviewPanelSerializer('vega.preview', 
-    new VegaPreviewSerializer('vega.preview', extensionPath, vegaPreviewTemplate));
+  window.registerWebviewPanelSerializer('vega.preview_yaml', 
+    new VegaPreviewSerializer('vega.preview_yaml', extensionPath, vegaPreviewTemplate));
 
   // register Vega visual vocabulary serializer for restore on vscode restart
-  window.registerWebviewPanelSerializer('vega.visual.vocabulary', 
-    new VegaPreviewSerializer('vega.visual.vocabulary', extensionPath, visualVocabularyTemplate));
+  window.registerWebviewPanelSerializer('vega.visual_yaml.vocabulary', 
+    new VegaPreviewSerializer('vega.visual_yaml.vocabulary', extensionPath, visualVocabularyTemplate));
 
   // Vega: Create Vega document command 
   const createVegaDocumentCommand: Disposable = commands.registerCommand('vega.create', () => 
     createVegaDocument(
-      templateManager.getTemplate('vega.vg.json'), // vega json template
-      templateManager.getTemplate('vega.lite.vl.json') // vega-lite json template
+      templateManager.getTemplate('vega.vg.yaml'), // vega json template
+      templateManager.getTemplate('vega.lite.vl.yaml') // vega-lite json template
     )
   );
   context.subscriptions.push(createVegaDocumentCommand);
 
-  // Vega: Examples command
-  const vegaExamplesCommand: Disposable = commands.registerCommand('vega.examples', () => 
-    showVegaExamples(context.asAbsolutePath('examples'), 'vg.json')
-  );
-  context.subscriptions.push(vegaExamplesCommand);
+  // // Vega: Examples command
+  // const vegaExamplesCommand: Disposable = commands.registerCommand('vega.examples', () => 
+  //   showVegaExamples(context.asAbsolutePath('examples'), 'vg.json')
+  // );
+  // context.subscriptions.push(vegaExamplesCommand);
 
-  // Vega: Lite Examples command
-  const vegaExamplesLiteCommand: Disposable = commands.registerCommand('vega.examples.lite', () => 
-    showVegaExamples(context.asAbsolutePath('examples'), 'vl.json')
-  );
-  context.subscriptions.push(vegaExamplesLiteCommand);
+  // // Vega: Lite Examples command
+  // const vegaExamplesLiteCommand: Disposable = commands.registerCommand('vega.examples.lite', () => 
+  //   showVegaExamples(context.asAbsolutePath('examples'), 'vl.json')
+  // );
+  // context.subscriptions.push(vegaExamplesLiteCommand);
 
   // Vega: Preview command
   const vegaWebview: Disposable = 
-    createVegaPreviewCommand('vega.preview', extensionPath, vegaPreviewTemplate);
+    createVegaPreviewCommand('vega.preview_yaml', extensionPath, vegaPreviewTemplate);
   context.subscriptions.push(vegaWebview);
 
   // Vega: Preview Remote command
-  const vegaWebviewRemote: Disposable = commands.registerCommand('vega.preview.remote', () => {
+  const vegaWebviewRemote: Disposable = commands.registerCommand('vega.preview_yaml.remote', () => {
     window.showInputBox({
       ignoreFocusOut: true,
       placeHolder: 'https://gist.github.com/... or https://vega.github.io/editor/#/url/...',
@@ -88,7 +85,7 @@ export function activate(context: ExtensionContext) {
       if (vegaSpecUrl && vegaSpecUrl !== undefined && vegaSpecUrl.length > 0) {
         const vegaSpecUri: Uri = Uri.parse(vegaSpecUrl);
         // launch new remote Vega spec preview
-        commands.executeCommand('vega.preview', vegaSpecUri);
+        commands.executeCommand('vega.preview_yaml', vegaSpecUri);
       }  
     });
   });
@@ -97,8 +94,8 @@ export function activate(context: ExtensionContext) {
   // Vega: Visual Vocabulary command
   const visualVocabularyWebview: Disposable = 
     // createVegaPreviewCommand('vega.visual.vocabulary', extensionPath, visualVocabularyTemplate);
-    commands.registerCommand('vega.visual.vocabulary', () => 
-      showVegaExamples(context.asAbsolutePath('examples/visual-vocabulary'), 'vg.json')
+    commands.registerCommand('vega.visual_yaml.vocabulary', () => 
+      showVegaExamples(context.asAbsolutePath('examples/visual-vocabulary'), 'vg.yaml')
     );
   context.subscriptions.push(visualVocabularyWebview);
 
@@ -170,7 +167,7 @@ function createVegaPreviewCommand(viewType: string, extensionPath: string, viewT
  * @param document The vscode text document to check.
  */
 function isVegaFile(document: TextDocument): boolean {
-  const fileName: string = path.basename(document.uri.fsPath).replace('.json', ''); // strip out .json ext
+  const fileName: string = path.basename(document.uri.fsPath).replace('.yaml', ''); // strip out .json ext
   const fileExt: string = fileName.substr(fileName.lastIndexOf('.'));
   logger.debug('isVegaFile(): document:', document);
   logger.debug('isVegaFile(): file:', fileName);
